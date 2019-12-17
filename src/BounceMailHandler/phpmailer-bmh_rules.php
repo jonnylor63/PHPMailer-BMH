@@ -510,6 +510,16 @@ function bmhBodyRules($body, /** @noinspection PhpUnusedParameterInspection */ $
         $result['rule_cat'] = 'dns_unknown';
         $result['rule_no'] = '0247';
     }
+   /* CUSTOM MASSI RULE OUT OF OFFICE
+   * rule: autoreply
+   * sample:
+   * AutoReply message from xxxxx@yourdomain.com
+   */
+    elseif (preg_match ("/ferie|fuori ufficio|fuori dall'ufficio|ritorno in ufficio|sono assente|assenza|assente dall|momentaneamente assente|out of office|out of the office|ll be away|able to answer/i",$body,$match)) {
+        $result['rule_cat']    = 'autoreply';
+        $result['rule_no']     = '0167';
+        #$result['email']       = $match[1];
+    }
 
     if ($result['rule_no'] !== '0000' && $result['email'] === '') {
         $preBody = \substr($body, 0, \strpos($body, $match[0]));
