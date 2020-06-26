@@ -272,7 +272,7 @@ function bmhBodyRules($body, /** @noinspection PhpUnusedParameterInspection */ $
    *   <xxxxx@yourdomain.com>:
    *   - User disk quota exceeded. (#4.3.0)
    */
-    elseif (\preg_match("/quota\s+exceeded/i", $body, $match)) {
+    elseif (\preg_match("/quota\s+exceeded|message\s+size\s+exceeded/i", $body, $match)) {
         $result['rule_cat'] = 'full';
         $result['rule_no'] = '0158';
     } /* rule: full
@@ -438,7 +438,7 @@ function bmhBodyRules($body, /** @noinspection PhpUnusedParameterInspection */ $
    *   Technical details of permanent failure:
    *   PERM_FAILURE: SMTP Error (state 9): 550 5.7.1 Your message (sent through 209.85.132.244) was blocked by ROTA DNSBL. If you are not a spammer, open http://www.rota.lv/DNSBL and follow instructions or call +371 7019029, or send an e-mail message from another address to dz@ROTA.lv with the blocked sender e-mail name.
    */
-    elseif (\preg_match("/Your message \([^)]+\) was blocked by/i", $body, $match)) {
+    elseif (\preg_match("/Your message \([^)]+\) was blocked by|message has been blocked/i", $body, $match)) {
         $result['rule_cat'] = 'antispam';
         $result['rule_no'] = '0250';
     } /* rule: content_reject
@@ -515,7 +515,7 @@ function bmhBodyRules($body, /** @noinspection PhpUnusedParameterInspection */ $
    * sample:
    * AutoReply message from xxxxx@yourdomain.com
    */
-    elseif (preg_match ("/ferie|fuori ufficio|fuori dall'ufficio|ritorno in ufficio|sono assente|assenza|assente dall|momentaneamente assente|out of office|out of the office|ll be away|able to answer/i",$body,$match)) {
+    elseif (preg_match ("/ferie|fuori ufficio|fuori dall'ufficio|ritorno in ufficio|sono assente|assenza|assente dall|momentaneamente assente|out of office|out of the office|ll be away|able to answer|maternity leave|maternit/i",$body,$match)) {
         $result['rule_cat']    = 'autoreply';
         $result['rule_no']     = '0167';
         #$result['email']       = $match[1];
@@ -753,7 +753,7 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false): array
          * sample 3:
          *   Diagnostic-Code: SMTP; 550 relaying to <xxxxx@yourdomain.com> prohibited by administrator
          */
-        elseif (\preg_match('/Relay.*(?:denied|prohibited)/is', $diag_code)) {
+        elseif (\preg_match('/Relay.*(?:denied|prohibited|prohibited the mail that you sent)/is', $diag_code)) {
             $result['rule_cat'] = 'unknown';
             $result['rule_no'] = '0108';
         } /* rule: unknown
@@ -1077,7 +1077,7 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false): array
          * sample:
          *   Diagnostic-Code: SMTP; 553 sorry, that domain isn't in my list of allowed rcpthosts (#5.5.3 - chkuser)
          */
-        elseif (\preg_match("/domain isn't in.*allowed rcpthost/is", $diag_code)) {
+        elseif (\preg_match("/domain isn't in.*allowed rcpthost|prohibited the mail that you sent|possono ricevere posta solo|non rispetta le norme definite|viola i criteri|recapitare il messaggio per regolamenti/is", $diag_code)) {
             $result['rule_cat'] = 'command_reject';
             $result['rule_no'] = '0191';
         } /* rule: command_reject
@@ -1224,21 +1224,21 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false): array
          * sample:
          *   Diagnostic-Code: SMTP; 451 mta172.mail.tpe.domain.com Resources temporarily unavailable. Please try again later.  [#4.16.4:70].
          */
-        elseif (\preg_match('/Resources temporarily unavailable/i', $diag_code)) {
+        elseif (\preg_match('/Resources temporarily unavailable|was aborted after|problem with the recipient|mail action aborted/i', $diag_code)) {
             $result['rule_cat'] = 'defer';
             $result['rule_no'] = '0116';
         } /* rule: antispam, deny ip
          * sample:
          *   Diagnostic-Code: SMTP; 554 sender is rejected: 0,mx20,wKjR5bDrnoM2yNtEZVAkBg==.32467S2
          */
-        elseif (\preg_match('/sender is rejected/i', $diag_code)) {
+        elseif (\preg_match('/sender is rejected|temporarily rate limited/i', $diag_code)) {
             $result['rule_cat'] = 'antispam';
             $result['rule_no'] = '0101';
         } /* rule: antispam, deny ip
          * sample:
          *   Diagnostic-Code: SMTP; 554 <unknown[111.111.111.000]>: Client host rejected: Access denied
          */
-        elseif (\preg_match('/Client host rejected/i', $diag_code)) {
+        elseif (\preg_match('/Client host rejected|detected as spam/i', $diag_code)) {
             $result['rule_cat'] = 'antispam';
             $result['rule_no'] = '0102';
         } /* rule: antispam, mismatch ip
@@ -1437,7 +1437,7 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false): array
          *   The user to whom this message was addressed has exceeded the allowed mailbox
          *   quota. Please resend the message at a later time.
          */
-        elseif (\preg_match("/exceed.*\n?.*quota/i", $dsn_msg)) {
+        elseif (\preg_match("/exceed.*\n?.*quota|exceed the quota/i", $dsn_msg)) {
             $result['rule_cat'] = 'full';
             $result['rule_no'] = '0187';
         } /* rule: full
@@ -1520,12 +1520,17 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false): array
         elseif (\preg_match('/Deferred.*Connection.*tim(?:e|ed).*out/i', $dsn_msg)) {
             $result['rule_cat'] = 'dns_unknown';
             $result['rule_no'] = '0119';
-        } /* rule: dns_unknown
+        }
+        // custom Massi, per avere una rule hard ma non remove
+        elseif (\preg_match('/Connection.*tim(?:e|ed).*out/i', $dsn_msg)) {
+            $result['rule_cat'] = 'delayed';
+            $result['rule_no'] = '0119';
+        } /* rule: dns_unknown/* rule: dns_unknown
          * sample:
          *   ----- Transcript of session follows -----
          *   xxxxx@yourdomain.com... Deferred: Name server: domain.com.: host name lookup failure
          */
-        elseif (\preg_match('/Deferred.*host name lookup failure/i', $dsn_msg)) {
+        elseif (\preg_match('/Deferred.*host name lookup failure|Temporary\s+lookup\s+failure/i', $dsn_msg)) {
             $result['rule_cat'] = 'dns_unknown';
             $result['rule_no'] = '0121';
         } /* rule: dns_loop
@@ -1559,7 +1564,7 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false): array
          *   Delivery to the following recipients failed.
          *   xxxxx@yourdomain.com
          */
-        elseif (\preg_match("/Delivery to the following recipients failed.*\n.*\n.*" . \preg_quote($result['email'], '/') . '/i', $dsn_msg)) {
+        elseif (\preg_match("/Delivery to the following recipients failed.*\n.*\n.*|Message\s+delivery\s+failed" . \preg_quote($result['email'], '/') . '/i', $dsn_msg)) {
             $result['rule_cat'] = 'other';
             $result['rule_no'] = '0176';
         }
