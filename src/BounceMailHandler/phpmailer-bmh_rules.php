@@ -420,7 +420,7 @@ function bmhBodyRules($body, /** @noinspection PhpUnusedParameterInspection */ $
    *   111.111.111.111 failed after I sent the message.
    *   Remote host said: 451 mta283.mail.scd.yahoo.com Resources temporarily unavailable. Please try again later [#4.16.5].
    */
-    elseif (\preg_match('/Resources temporarily unavailable/i', $body, $match)) {
+    elseif (\preg_match('/Resources temporarily unavailable|Insufficient system resources/i', $body, $match)) {
         $result['rule_cat'] = 'defer';
         $result['rule_no'] = '0163';
     } /* rule: autoreply
@@ -515,7 +515,7 @@ function bmhBodyRules($body, /** @noinspection PhpUnusedParameterInspection */ $
    * sample:
    * AutoReply message from xxxxx@yourdomain.com
    */
-    elseif (preg_match ("/ferie|fuori ufficio|fuori dall'ufficio|ritorno in ufficio|sono assente|sar. assente|assenza|assente dal|momentaneamente assente|out of office|out of the office|ll be away|able to answer|maternity leave|maternit|sar. assente|rispondo quando|automated response|back on|avermi contattat.|certezza della lettura|al mio rientro|generato automaticamente|automatically generated|dringenden|will be back|able to reply/i",$body,$match)) {
+    elseif (preg_match ("/ferie|fuori ufficio|fuori dall'ufficio|ritorno in ufficio|in vacanza|se urgente|per urgenze|sono assente|sar. assente|assenza|assente dal|momentaneamente assente|out of office|out of the office|ll be away|able to answer|maternity leave|maternit|sar. assente|rispondo quando|automated response|back on|avermi contattat.|certezza della lettura|al mio rientro|generato automaticamente|automatically generated|dringenden|will be back|able to reply/i",$body,$match)) {
         $result['rule_cat']    = 'autoreply';
         $result['rule_no']     = '0167';
         #$result['email']       = $match[1];
@@ -1238,7 +1238,7 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false): array
          * sample:
          *   Diagnostic-Code: SMTP; 554 <unknown[111.111.111.000]>: Client host rejected: Access denied
          */
-        elseif (\preg_match('/Client host rejected|detected as spam/i', $diag_code)) {
+        elseif (\preg_match('/Client host rejected|detected as spam|spam detected/i', $diag_code)) {
             $result['rule_cat'] = 'antispam';
             $result['rule_no'] = '0102';
         } /* rule: antispam, mismatch ip
