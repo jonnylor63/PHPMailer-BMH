@@ -515,7 +515,7 @@ function bmhBodyRules($body, /** @noinspection PhpUnusedParameterInspection */ $
    * sample:
    * AutoReply message from xxxxx@yourdomain.com
    */
-    elseif (preg_match ("/ferie|fuori ufficio|fuori dall'ufficio|ritorno in ufficio|in vacanza|se urgente|per urgenze|sono assente|sar. assente|assenza|assente dal|momentaneamente assente|out of office|out of the office|ll be away|able to answer|maternity leave|maternit|sar. assente|rispondo quando|automated response|back on|avermi contattat.|certezza della lettura|al mio rientro|generato automaticamente|automatically generated|dringenden|will be back|able to reply/i",$body,$match)) {
+    elseif (preg_match ("/ferie|fuori ufficio|fuori dall'ufficio|ritorno in ufficio|fuori sede|limited access to|no access to|chiuso dal|in vacanza|se urgente|per urgenze|sono assente|sar. assente|assenza|assente dal|momentaneamente assente|sar. reperibile|richieste urgenti|out of office|out of the office|the office|ll be away|able to answer|maternity leave|maternit|sar. assente|rispondo quando|automated response|back on|avermi contattat.|certezza della lettura|al mio rientro|generato automaticamente|automatically generated|dringenden|will be back|able to reply|holiday/i",$body,$match)) {
         $result['rule_cat']    = 'autoreply';
         $result['rule_no']     = '0167';
         #$result['email']       = $match[1];
