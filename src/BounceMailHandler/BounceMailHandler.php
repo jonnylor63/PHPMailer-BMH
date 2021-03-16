@@ -262,6 +262,22 @@ class BounceMailHandler
      */
     public $hardMailbox = 'INBOX.hard';
 
+    /**
+     * determines if other bounces will be moved to another mailbox folder
+     *
+     * NOTE: If true, this will disable delete and perform a move operation instead
+     *
+     * @var bool
+     */
+    public $moveOther = false;
+
+    /**
+     * mailbox folder to move hard bounces to, default is 'other'
+     *
+     * @var string
+     */
+    public $otherMailbox = 'INBOX.other';
+
     /*
      * Mailbox folder to move unprocessed mails
      * @var string
@@ -482,6 +498,7 @@ class BounceMailHandler
         if (\stripos($this->mailhost, 'gmail') !== false) {
             $this->moveSoft = false;
             $this->moveHard = false;
+            $this->moveOther = false;
         }
 
         $port = $this->port . '/' . $this->service . '/' . $this->serviceOption;
@@ -627,6 +644,8 @@ class BounceMailHandler
             $remove = 'moved (hard)';
         } elseif ($this->moveSoft && $result['bounce_type'] == 'soft') {
             $remove = 'moved (soft)';
+        } elseif ($this->moveOther && $result['bounce_type'] != 'hard' && $result['bounce_type'] != 'soft') {
+            $remove = 'moved (other)';
         } elseif ($this->disableDelete) {
             $remove = 0;
         } else {
@@ -874,6 +893,20 @@ class BounceMailHandler
                     if (!$this->testMode) {
                         /** @noinspection PhpUsageOfSilenceOperatorInspection */
                         @\imap_mail_move($this->mailboxLink, (string) $x, $this->softMailbox);
+                    }
+
+                    $moveFlag[$x] = true;
+                    ++$movedCount;
+                } elseif ($this->moveOther) {
+                    // check if the move directory exists, if not create it
+                    if (!$this->testMode) {
+                        $this->mailboxExist($this->otherMailbox);
+                    }
+
+                    // move the message
+                    if (!$this->testMode) {
+                        /** @noinspection PhpUsageOfSilenceOperatorInspection */
+                        @\imap_mail_move($this->mailboxLink, (string) $x, $this->otherMailbox);
                     }
 
                     $moveFlag[$x] = true;

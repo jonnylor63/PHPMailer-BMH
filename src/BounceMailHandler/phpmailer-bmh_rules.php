@@ -1613,11 +1613,12 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false): array
 
     if ($result['rule_no'] == '0000') {
         if ($debug_mode) {
-            echo 'email: ' . $result['email'] . $bmh_newline;
-            echo 'Action: ' . $action . $bmh_newline;
-            echo 'Status: ' . $status_code . $bmh_newline;
-            echo 'Diagnostic-Code: ' . $diag_code . $bmh_newline;
-            echo "DSN Message:<br />\n" . $dsn_msg . $bmh_newline;
+            echo '*** rule_no == 0000 *** ' . $bmh_newline;
+            echo 'email: ' . $result['email'] . ' ' . $bmh_newline;
+            echo 'Action: ' . $action . ' ' . $bmh_newline;
+            echo 'Status: ' . $status_code . ' ' . $bmh_newline;
+            echo 'Diagnostic-Code: ' . $diag_code . ' ' . $bmh_newline;
+            echo "DSN Message:<br />\n" . $dsn_msg . ' ' . $bmh_newline;
             echo $bmh_newline;
         }
     } else {
