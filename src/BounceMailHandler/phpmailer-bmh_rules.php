@@ -57,11 +57,6 @@ $rule_categories = [
     'warning'        => ['remove' => 0, 'bounce_type' => 'soft'],
 ];
 
-/*
- * var for new line ending
- */
-$bmh_newline = "<br />\n";
-
 /**
  * Defined bounce parsing rules for non-standard DSN
  *
@@ -72,10 +67,9 @@ $bmh_newline = "<br />\n";
  * @return array $result an array include the following fields: 'email', 'bounce_type','remove','rule_no','rule_cat'
  *               if we could NOT detect the type of bounce, return rule_no = '0000'
  */
-function bmhBodyRules($body, /** @noinspection PhpUnusedParameterInspection */ $structure, $debug_mode = false): array
+function bmhBodyRules($body, /** @noinspection PhpUnusedParameterInspection */ $structure, $debug_mode = false, $bmh_newline="<br />\n"): array
 {
     global $rule_categories;
-    global $bmh_newline;
 
     // initialize the result array
     $result = [
@@ -555,10 +549,9 @@ function bmhBodyRules($body, /** @noinspection PhpUnusedParameterInspection */ $
  * @return array $result an array include the following fields: 'email', 'bounce_type','remove','rule_no','rule_cat'
  *               if we could NOT detect the type of bounce, return rule_no = '0000'
  */
-function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false): array
+function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false, $bmh_newline="<br />\n"): array
 {
     global $rule_categories;
-    global $bmh_newline;
 
     // initialize the result array
     $result = [
@@ -1614,11 +1607,11 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false): array
     if ($result['rule_no'] == '0000') {
         if ($debug_mode) {
             echo '*** rule_no == 0000 *** ' . $bmh_newline;
-            echo 'email: ' . $result['email'] . ' ' . $bmh_newline;
-            echo 'Action: ' . $action . ' ' . $bmh_newline;
-            echo 'Status: ' . $status_code . ' ' . $bmh_newline;
-            echo 'Diagnostic-Code: ' . $diag_code . ' ' . $bmh_newline;
-            echo "DSN Message:<br />\n" . $dsn_msg . ' ' . $bmh_newline;
+            echo ' email: ' . $result['email'] . ' ' . $bmh_newline;
+            echo ' Action: ' . $action . ' ' . $bmh_newline;
+            echo ' Status: ' . $status_code . ' ' . $bmh_newline;
+            echo ' Diagnostic-Code: ' . $diag_code . ' ' . $bmh_newline;
+            echo " DSN Message:" . $bmh_newline . $dsn_msg . ' ' . $bmh_newline;
             echo $bmh_newline;
         }
     } else {

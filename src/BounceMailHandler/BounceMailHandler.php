@@ -409,7 +409,7 @@ class BounceMailHandler
         if (\trim($mailbox) === '') {
             // this is a critical error with either the mailbox name blank or an invalid mailbox name
             // need to stop processing and exit at this point
-            echo 'Invalid mailbox name for move operation. Cannot continue: ' . $mailbox . "<br />\n";
+            echo 'Invalid mailbox name for move operation. Cannot continue: ' . $mailbox . $this->bmhNewLine;
             exit();
         }
 
@@ -490,7 +490,7 @@ class BounceMailHandler
     {
         // before starting the processing, let's check the delete flag and do global deletes if true
         if (\trim($this->deleteMsgDate) !== '') {
-            echo 'processing global delete based on date of ' . $this->deleteMsgDate . '<br />';
+            echo 'processing global delete based on date of ' . $this->deleteMsgDate . $this->bmhNewLine;
             $this->globalDelete();
         }
 
@@ -572,7 +572,7 @@ class BounceMailHandler
             $dsnReport = \imap_fetchbody($this->mailboxLink, $pos, '2');
 
             // process bounces by rules
-            $result = bmhDSNRules($dsnMsg, $dsnReport, $this->debugDsnRule);
+            $result = bmhDSNRules($dsnMsg, $dsnReport, $this->debugDsnRule, $this->bmhNewLine);
             $result = \is_callable($this->customDSNRulesCallback) ? \call_user_func($this->customDSNRulesCallback, $result, $dsnMsg, $dsnReport, $this->debugDsnRule) : $result;
         } elseif ($type == 'BODY') {
             /** @noinspection PhpUsageOfSilenceOperatorInspection */
@@ -585,7 +585,7 @@ class BounceMailHandler
             switch ($structure->type) {
                 case 0: // Content-type = text
                     $body = \imap_fetchbody($this->mailboxLink, $pos, '1');
-                    $result = bmhBodyRules($body, $structure, $this->debugBodyRule);
+                    $result = bmhBodyRules($body, $structure, $this->debugBodyRule, $this->bmhNewLine);
                     $result = \is_callable($this->customBodyRulesCallback) ? \call_user_func($this->customBodyRulesCallback, $result, $body, $structure, $this->debugBodyRule) : $result;
 
                     break;
@@ -600,7 +600,7 @@ class BounceMailHandler
                         $body = \base64_decode($body, true);
                     }
 
-                    $result = bmhBodyRules($body, $structure, $this->debugBodyRule);
+                    $result = bmhBodyRules($body, $structure, $this->debugBodyRule, $this->bmhNewLine);
                     $result = \is_callable($this->customBodyRulesCallback) ? \call_user_func($this->customBodyRulesCallback, $result, $body, $structure, $this->debugBodyRule) : $result;
 
                     break;
@@ -615,7 +615,7 @@ class BounceMailHandler
                     }
 
                     $body = \substr($body, 0, 1000);
-                    $result = bmhBodyRules($body, $structure, $this->debugBodyRule);
+                    $result = bmhBodyRules($body, $structure, $this->debugBodyRule, $this->bmhNewLine);
                     $result = \is_callable($this->customBodyRulesCallback) ? \call_user_func($this->customBodyRulesCallback, $result, $body, $structure, $this->debugBodyRule) : $result;
 
                     break;
@@ -770,16 +770,16 @@ class BounceMailHandler
         }
 
         if ($this->testMode) {
-            $this->output('Running in test mode, not deleting messages from mailbox<br />');
+            $this->output('Running in test mode, not deleting messages from mailbox'.$this->bmhNewLine);
         } else {
             if ($this->disableDelete) {
                 if ($this->moveHard) {
-                    $this->output('Running in move mode<br />');
+                    $this->output('Running in move mode'.$this->bmhNewLine);
                 } else {
-                    $this->output('Running in disableDelete mode, not deleting messages from mailbox<br />');
+                    $this->output('Running in disableDelete mode, not deleting messages from mailbox'.$this->bmhNewLine);
                 }
             } else {
-                $this->output('Processed messages will be deleted from mailbox<br />');
+                $this->output('Processed messages will be deleted from mailbox'.$this->bmhNewLine);
             }
         }
 

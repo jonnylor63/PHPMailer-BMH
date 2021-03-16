@@ -46,6 +46,8 @@ require_once '../vendor/autoload.php';
 $bmh = new BounceMailHandler();
 $bmh->actionFunction = 'callbackAction'; // default is 'callbackAction'
 $bmh->verbose = BounceMailHandler::VERBOSE_SIMPLE; //BounceMailHandler::VERBOSE_SIMPLE; //BounceMailHandler::VERBOSE_REPORT; //BounceMailHandler::VERBOSE_DEBUG; //BounceMailHandler::VERBOSE_QUIET; // default is BounceMailHandler::VERBOSE_SIMPLE
+$bmh->bmhNewLine="\n";      // Dafault is "<br />\n"
+
 //$bmh->useFetchStructure  = true; // true is default, no need to specify
 //$bmh->testMode           = false; // false is default, no need to specify
 //$bmh->debugBodyRule      = false; // false is default, no need to specify
@@ -74,6 +76,8 @@ $bmh->boxname = 'INBOX'; // the mailbox to access, default is 'INBOX'
 //$bmh->hardMailbox        = 'INBOX.hardtest'; // default is 'INBOX.hard' - NOTE: must start with 'INBOX.'
 //$bmh->moveSoft           = true; // default is false
 //$bmh->softMailbox        = 'INBOX.softtest'; // default is 'INBOX.soft' - NOTE: must start with 'INBOX.'
+//$bmh->moveOther           = true; // default is false
+//$bmh->otherMailbox        = 'INBOX.othertest'; // default is 'INBOX.other' - NOTE: must start with 'INBOX.'
 //$bmh->deleteMsgDate      = '2009-01-05'; // format must be as 'yyyy-mm-dd'
 
 /*

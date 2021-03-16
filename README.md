@@ -4,7 +4,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/64177eb1d95948789a1fb54b97e0ed21)](https://www.codacy.com/app/voku/PHPMailer-BMH)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/2161b4c1-5025-4e29-ae22-1f91c3a6657c/mini.png)](https://insight.sensiolabs.com/projects/2161b4c1-5025-4e29-ae22-1f91c3a6657c)
 [![Latest Stable Version](https://poser.pugx.org/voku/bounce-mail-handler/v/stable)](https://packagist.org/packages/voku/bounce-mail-handler)
- [![Total Downloads](https://poser.pugx.org/voku/bounce-mail-handler/downloads)](https://packagist.org/packages/voku/bounce-mail-handler) 
+ [![Total Downloads](https://poser.pugx.org/voku/bounce-mail-handler/downloads)](https://packagist.org/packages/voku/bounce-mail-handler)
 [![Latest Unstable Version](https://poser.pugx.org/voku/bounce-mail-handler/v/unstable)](https://packagist.org/packages/voku/bounce-mail-handler)
 [![License](https://poser.pugx.org/voku/bounce-mail-handler/license)](https://packagist.org/packages/voku/bounce-mail-handler)
 
@@ -31,3 +31,14 @@ $ composer require jonnylor63/bounce-mail-handler
 ## Examples
 
 [https://github.com/jonnylor63/PHPMailer-BMH/tree/main/examples](https://github.com/jonnylor63/PHPMailer-BMH/tree/main/examples)
+
+If bounce_type is "hard" the process use $bmh->moveHard and $bmh->hardMailbox
+If bounce_type is "soft" the process use $bmh->moveSoft and $bmh->softMailbox
+If bounce_type different from "hard" and "soft" the process use $bmh->moveOther and $bmh->otherMailbox
+
+The email process try to understand :
+1. standard DSN msg
+2. not standard DSN msg
+3. didn't get content-type header
+
+If process fail the email will be deleted only if disableDelete is false and purgeUnprocessed is true

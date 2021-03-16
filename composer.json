@@ -1,5 +1,5 @@
 {
-  "name": "voku/bounce-mail-handler",
+  "name": "jonnylor63/bounce-mail-handler",
   "type": "library",
   "description": "Bounce Mail Handler",
   "keywords": [
@@ -26,6 +26,11 @@
     {
       "name": "Lars Moelleken",
       "email": "lars@moelleken.org",
+      "role": "Fork Maintainer"
+    },
+    {
+      "name": "Giovanni Lorenzini",
+      "email": "giovanni.lorenzini@gmail.com",
       "role": "Fork Maintainer"
     }
   ],
