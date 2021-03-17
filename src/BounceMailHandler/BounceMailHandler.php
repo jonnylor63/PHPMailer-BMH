@@ -579,6 +579,7 @@ class BounceMailHandler
             $structure = @\imap_fetchstructure($this->mailboxLink, $pos);
 
             if (!\is_object($structure)) {
+                $this->output($this->bmhNewLine . 'Msg #' . $pos . ' !\is_object - processBounce return false : ', self::VERBOSE_REPORT);
                 return false;
             }
 
@@ -621,14 +622,13 @@ class BounceMailHandler
                     break;
 
                 default: // un-support Content-type
-                    $this->output('Msg #' . $pos . ' is unsupported Content-Type:' . $structure->type, self::VERBOSE_REPORT);
-
+                    $this->output('Msg #' . $pos . ' is unsupported Content-Type:' . $structure->type . ' - processBounce return false', self::VERBOSE_REPORT);
                     return false;
             }
         } else {
             // internal error
             $this->errorMessage = 'Internal Error: unknown type';
-
+            $this->output('Msg #' . $pos . ' Internal Error: unknown type - processBounce return false', self::VERBOSE_REPORT);
             return false;
         }
 
@@ -640,24 +640,24 @@ class BounceMailHandler
             $email = \str_replace('TO:<', '', $email);
         }
 
-        if ($this->moveHard && $result['bounce_type'] == 'hard') {
-            $remove = 'moved (hard)';
-        } elseif ($this->moveSoft && $result['bounce_type'] == 'soft') {
-            $remove = 'moved (soft)';
-        } elseif ($this->moveOther && $result['bounce_type'] != 'hard' && $result['bounce_type'] != 'soft') {
-            $remove = 'moved (other)';
-        } elseif ($this->disableDelete) {
-            $remove = 0;
-        } else {
-            $remove = $result['remove'];
-        }
-
         $ruleNumber = $result['rule_no'];
         $ruleCategory = $result['rule_cat'];
         $status_code = $result['status_code'];
         $action = $result['action'];
         $diagnostic_code = $result['diagnostic_code'];
         $xheader = false;
+
+        if ($this->moveHard && $result['bounce_type'] == 'hard') {
+            $remove = 'moved (hard)';
+        } elseif ($this->moveSoft && $result['bounce_type'] == 'soft') {
+            $remove = 'moved (soft)';
+        } elseif ($this->moveOther && $ruleNumber !== '0000' && $result['bounce_type'] != 'hard' && $result['bounce_type'] != 'soft') {
+            $remove = 'moved (other)';
+        } elseif ($this->disableDelete) {
+            $remove = 0;
+        } else {
+            $remove = $result['remove'];
+        }
 
         if ($ruleNumber === '0000') {
             // unrecognized
@@ -722,6 +722,7 @@ class BounceMailHandler
             return $result;
         }
 
+        $this->output('Msg #' . $pos . ' End of process 0000 - processBounce return false', self::VERBOSE_REPORT);
         return false;
     }
 
