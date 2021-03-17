@@ -78,7 +78,7 @@ $bmh->boxname = 'INBOX'; // the mailbox to access, default is 'INBOX'
 //$bmh->softMailbox        = 'INBOX.softtest'; // default is 'INBOX.soft' - NOTE: must start with 'INBOX.'
 //$bmh->moveOther           = true; // default is false
 //$bmh->otherMailbox        = 'INBOX.othertest'; // default is 'INBOX.other' - NOTE: must start with 'INBOX.'
-//$bmh->deleteMsgDate      = '2009-01-05'; // format must be as 'yyyy-mm-dd'
+//$bmh->deleteMsgDate      = '2009-01-05'; // format must be as 'yyyy-mm-dd' - processing global delete based on date of
 
 /*
  * rest used regardless what type of connection it is
