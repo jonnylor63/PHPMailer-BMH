@@ -45,6 +45,9 @@ require_once '../vendor/autoload.php';
 // testing examples
 $bmh = new BounceMailHandler();
 $bmh->actionFunction = 'callbackAction'; // default is 'callbackAction'
+//$bmh->customBodyRulesCallback = "customBodyRules";
+//$bmh->customDSNRulesCallback = "customDSNRules";
+
 $bmh->verbose = BounceMailHandler::VERBOSE_SIMPLE; //BounceMailHandler::VERBOSE_SIMPLE; //BounceMailHandler::VERBOSE_REPORT; //BounceMailHandler::VERBOSE_DEBUG; //BounceMailHandler::VERBOSE_QUIET; // default is BounceMailHandler::VERBOSE_SIMPLE
 $bmh->bmhNewLine="\n";      // Dafault is "<br />\n"
 

@@ -1606,6 +1606,7 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false, $bmh_newline="<
 
     if ($result['rule_no'] == '0000') {
         if ($debug_mode) {
+            echo $bmh_newline;
             echo '*** rule_no == 0000 *** ' . $bmh_newline;
             echo ' email: ' . $result['email'] . ' ' . $bmh_newline;
             echo ' Action: ' . $action . ' ' . $bmh_newline;

@@ -309,7 +309,7 @@ class BounceMailHandler
      *
      * @var string
      */
-    private $version = '6.0-dev';
+    private $version = '6.1.0';
 
     /**
      * @return string
